@@ -39,6 +39,7 @@ class Simulator:
         work_dir=None,
         python_search=None,
         toplevel_lang="verilog",
+        tcl_sources=None,
         verilog_sources=None,
         vhdl_sources=None,
         includes=None,
@@ -93,6 +94,10 @@ class Simulator:
 
         self.toplevel = toplevel
         self.toplevel_lang = toplevel_lang
+
+        if tcl_sources is None:
+            tcl_sources = []
+        self.tcl_sources = self.get_abs_paths(tcl_sources)
 
         if verilog_sources is None:
             verilog_sources = []
@@ -494,6 +499,10 @@ class Questa(Simulator):
     def build_command(self):
 
         cmd = []
+
+        if self.tcl_sources:
+            for src in self.tcl_sources:
+                cmd.append(["vsim", "-do", src])
 
         if self.vhdl_sources:
             compile_args = self.compile_args + self.vhdl_compile_args
